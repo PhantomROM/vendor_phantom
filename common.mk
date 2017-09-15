@@ -20,27 +20,27 @@ PRODUCT_PROPERTY_OVERRIDES += persist.sys.dun.override=0
 
 # Backup Tool
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
-    vendor/deso/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions
+    vendor/phantom/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
+    vendor/phantom/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions
 
 # Substratum Clean Tool
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/bin/substraumclean.sh:install/bin/substraumclean.sh \
+    vendor/phantom/prebuilt/common/bin/substraumclean.sh:install/bin/substraumclean.sh \
 
 # init.d support
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/bin/sysinit:system/bin/sysinit \
-    vendor/deso/prebuilt/common/etc/init.d/00banner:system/etc/init.d/00banner \
-    vendor/deso/prebuilt/common/etc/init.d/90userinit:system/etc/init.d/90userinit
+    vendor/phantom/prebuilt/common/bin/sysinit:system/bin/sysinit \
+    vendor/phantom/prebuilt/common/etc/init.d/00banner:system/etc/init.d/00banner \
+    vendor/phantom/prebuilt/common/etc/init.d/90userinit:system/etc/init.d/90userinit
 
 # Init file
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/etc/init.local.rc:root/init.local.rc
+    vendor/phantom/prebuilt/common/etc/init.local.rc:root/init.local.rc
 
 # Bring in camera effects
 PRODUCT_COPY_FILES +=  \
-    vendor/deso/prebuilt/common/media/LMprec_508.emd:system/media/LMprec_508.emd \
-    vendor/deso/prebuilt/common/media/PFFprec_600.emd:system/media/PFFprec_600.emd
+    vendor/phantom/prebuilt/common/media/LMprec_508.emd:system/media/LMprec_508.emd \
+    vendor/phantom/prebuilt/common/media/PFFprec_600.emd:system/media/PFFprec_600.emd
 
 # Enable SIP+VoIP on all targets
 PRODUCT_COPY_FILES += \
@@ -78,7 +78,7 @@ PRODUCT_PACKAGES += \
     NovaLauncher \
     OmniJaws \
     OmniStyle \
-    DesoHeaders \
+    phantomHeaders \
     WelcomeBack
 
 ifneq ($(HAS_DEVICE_CAM),true)
@@ -146,22 +146,22 @@ endif
 
 # World APN list
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
+    vendor/phantom/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
 
 # Selective SPN list for operator number who has the problem.
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/etc/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
+    vendor/phantom/prebuilt/common/etc/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
 
 PRODUCT_PACKAGE_OVERLAYS += \
-	vendor/deso/overlay/common
+	vendor/phantom/overlay/common
 
 # Proprietary latinime libs needed for Keyboard swyping
 ifneq ($(filter arm64,$(TARGET_ARCH)),)
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/lib/libjni_latinime.so:system/lib/libjni_latinime.so
+    vendor/phantom/prebuilt/common/lib/libjni_latinime.so:system/lib/libjni_latinime.so
 else
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
+    vendor/phantom/prebuilt/common/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
 endif
 
 # by default, do not update the recovery with system updates
@@ -186,7 +186,7 @@ TARGET_BOOTANIMATION_SIZE := $(shell \
   fi )
 
 # get a sorted list of the sizes
-bootanimation_sizes := $(subst .zip,, $(shell ls vendor/deso/prebuilt/common/bootanimation))
+bootanimation_sizes := $(subst .zip,, $(shell ls vendor/phantom/prebuilt/common/bootanimation))
 bootanimation_sizes := $(shell echo -e $(subst $(space),'\n',$(bootanimation_sizes)) | sort -rn)
 
 # find the appropriate size and set
@@ -204,63 +204,62 @@ $(foreach size,$(bootanimation_sizes), $(call check_and_set_bootanimation,$(size
 
 ifeq ($(TARGET_BOOTANIMATION_HALF_RES),true)
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/bootanimation/halfres/$(TARGET_BOOTANIMATION_NAME).zip:system/media/bootanimation.zip
+    vendor/phantom/prebuilt/common/bootanimation/halfres/$(TARGET_BOOTANIMATION_NAME).zip:system/media/bootanimation.zip
 else
 PRODUCT_COPY_FILES += \
-    vendor/deso/prebuilt/common/bootanimation/$(TARGET_BOOTANIMATION_NAME).zip:system/media/bootanimation.zip
+    vendor/phantom/prebuilt/common/bootanimation/$(TARGET_BOOTANIMATION_NAME).zip:system/media/bootanimation.zip
 endif
 endif
 
 # Versioning System
-# Desolation first version.
 PRODUCT_VERSION_MAJOR = 8.0.0
 PRODUCT_VERSION_MINOR = v1.0
 #PRODUCT_VERSION_MAINTENANCE = O
-ifdef DESO_BUILD_EXTRA
-    DESO_POSTFIX := -$(DESO_BUILD_EXTRA)
+ifdef PHANTOM_BUILD_EXTRA
+    PHANTOM_POSTFIX := -$(PHANTOM_BUILD_EXTRA)
 else
-    DESO_POSTFIX := -$(shell date +"%Y%m%d-%H%M")
+    PHANTOM_POSTFIX := -$(shell date +"%Y%m%d-%H%M")
 endif
 
 ifdef BUILDTYPE_EXPERIMENTAL
-    DESO_BUILD_TYPE := Experimental
+    PHANTOM_BUILD_TYPE := Experimental
 endif
 
 ifdef BUILDTYPE_NIGHTLY
-    DESO_BUILD_TYPE := Nightly
+    PHANTOM_BUILD_TYPE := Nightly
 endif
 
 ifdef BUILDTYPE_WEEKLY
-    DESO_BUILD_TYPE := Weekly
+    PHANTOM_BUILD_TYPE := Weekly
 endif
 
 ifdef BUILDTYPE_RELEASE
-    DESO_BUILD_TYPE := Release
+    PHANTOM_BUILD_TYPE := Release
 endif
 
-ifdef DESO_BUILD_TYPE
-    DESO_BUILD_TYPE := $(DESO_BUILD_TYPE)
+ifdef PHANTOM_BUILD_TYPE
+    PHANTOM_BUILD_TYPE := $(PHANTOM_BUILD_TYPE)
 else
-    DESO_BUILD_TYPE := Unofficial
+    PHANTOM_BUILD_TYPE := Unofficial
 endif
 
 # Set all versions
-DESO_VERSION := Desolation-$(DESO_BUILD)-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(DESO_BUILD_TYPE)$(DESO_POSTFIX)
-OTA_VERSION := Desolation-$(DESO_BUILD)-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(DESO_BUILD_TYPE)$(DESO_POSTFIX)
-DESO_MOD_VERSION := Desolation-$(DESO_BUILD)-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(DESO_BUILD_TYPE)$(DESO_POSTFIX)
+PHANTOM_VERSION := Phantom-$(PHANTOM_BUILD)-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(PHANTOM_BUILD_TYPE)$(PHANTOM_POSTFIX)
+OTA_VERSION := Phantom-$(PHANTOM_BUILD)-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(PHANTOM_BUILD_TYPE)$(PHANTOM_POSTFIX)
+PHANTOM_MOD_VERSION := Phantom-$(PHANTOM_BUILD)-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(PHANTOM_BUILD_TYPE)$(PHANTOM_POSTFIX)
 
 PRODUCT_PROPERTY_OVERRIDES += \
     BUILD_DISPLAY_ID=$(BUILD_ID) \
-    ro.deso.version=$(DESO_VERSION) \
-    ro.deso.otaversion=$(OTA_VERSION) \
-    ro.modversion=$(DESO_MOD_VERSION) \
-    ro.deso.buildtype=$(DESO_BUILD_TYPE)
+    ro.phantom.version=$(PHANTOM_VERSION) \
+    ro.phantom.otaversion=$(OTA_VERSION) \
+    ro.modversion=$(PHANTOM_MOD_VERSION) \
+    ro.phantom.buildtype=$(PHANTOM_BUILD_TYPE)
 
 $(call inherit-product-if-exists, vendor/extra/product.mk)
 
 # Include SDCLANG definitions if it is requested and available
 ifeq ($(HOST_OS),linux)
     ifneq ($(wildcard vendor/qcom/sdclang-3.8/),)
-        include vendor/deso/sdclang/sdclang.mk
+        include vendor/phantom/sdclang/sdclang.mk
     endif
 endif
